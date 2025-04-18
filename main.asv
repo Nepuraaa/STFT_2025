@@ -8,8 +8,8 @@ windowLength = 2 ^ 9;               %窓長
 shiftWidth = windowLength / 2;      %シフト幅
 
 % 信号のはじめをゼロパティング
-temp = zeros(shiftWidth, 1);
-audioData = [temp; audioData];
+
+audioData = []
 
 % 信号の長さを取得
 sigLen = length(audioData);
@@ -26,7 +26,7 @@ for i = 1:numFrames
     endIdx = startIdx + windowLength -1;
     
     if endIdx > sigLen
-        frames(:, i) = [audioData(startIdx:sigLen); zeros(endIdx - sigLen, 1)];
+        frames(:, i) = [audioData(startIdx:signalLength); zeros(endIdx - sigLen, 1)];
     else
         frames(:, i) = audioData(startIdx:endIdx);
     end
