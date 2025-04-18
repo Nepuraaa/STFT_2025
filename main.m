@@ -17,8 +17,8 @@ sigLen = length(audioData);
 % フレーム数を計算
 numFrames = floor(sigLen / shiftWidth);
 
-% 短時間信号を格納する行列を初期化
-frames = zeros(windowLength, numFrames);
+% 複素スペクトルログラムを入れる変数
+S = zeros(windowLength, numFrames);
 
 % フレームの抽出
 for i = 1:numFrames
@@ -26,23 +26,21 @@ for i = 1:numFrames
     endIdx = startIdx + windowLength -1;
     
     if endIdx > sigLen
-        frames(:, i) = [audioData(startIdx:sigLen); zeros(endIdx - sigLen, 1)];
+        S(:, i) = [audioData(startIdx:sigLen); zeros(endIdx - sigLen, 1)];
     else
-        frames(:, i) = audioData(startIdx:endIdx);
+        S(:, i) = audioData(startIdx:endIdx);
     end
 end
-
-%disp(['分割されたフレーム数', num2str(numFrames)]);
-%disp(['各フレームの長さ', num2str(size(frames, 1)), 'サンプル']);
 
 % 窓関数（ハン窓）の実装
 n = 0:windowLength-1;
 hanWin = 0.5 - 0.5 * cos((2 * pi * n) / (windowLength -1));
 hanWin = hanWin(:);
 
-% ハン窓を信号に乗算
-windowedFrames = zeros(size(frames));
-for i = 1:size(frames,2)
-    windowedFrames(:, i) = frames(:, i) .* hanWin;
+% ハン窓を信号に乗算してfftして変数に格納
+for i = 1:size(S,2)
+    S(:, i) = S(:, i) .* hanWin;
+    S(:, i) = fft(S(:, i));
 end
+
 
