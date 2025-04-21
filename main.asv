@@ -38,9 +38,38 @@ hanWin = 0.5 - 0.5 * cos((2 * pi * n) / (windowLength -1));
 hanWin = hanWin(:);
 
 % ハン窓を信号に乗算してfftして変数に格納
-for i = 1:size(frames,2)
+for i = 1:size(S,2)
     S(:, i) = S(:, i) .* hanWin;
-    S(:, i) = fft()
+    S(:, i) = fft(S(:, i));
+    S(:, i) = abs(S(:, i)) .^ 2;
 end
+
+% パワースペクトラムを表示
+f = (0:windowLength - 1) * (Fs / windowLength);     %周波数軸
+f = f(:);
+t = linspace(0, sigLen / Fs, numFrames);            %時間軸
+S = 10 * log10(S);                                  %強さを対数表示
+
+image = imagesc(t, f, S);
+axis xy;
+
+
+title('パワースペクトラム');
+xlabel('時間 [s]');
+ylabel('周波数 [Hz]');
+
+% y軸のメモリを2000刻み
+f_max = max(f);
+yticks(0:2000:f_max/2);
+
+ylim([0 f_max/2]);
+
+ax = ancestor(image, 'axes');       %指数表示やめる
+ax.YAxis.Exponent = 0;
+
+% カラーバー
+c = colorbar;
+c.Label.String = '信号の強さ [dB]';
+
 
 
