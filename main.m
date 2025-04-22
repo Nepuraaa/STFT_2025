@@ -41,6 +41,32 @@ hanWin = hanWin(:);
 for i = 1:size(S,2)
     S(:, i) = S(:, i) .* hanWin;
     S(:, i) = fft(S(:, i));
+    S(:, i) = abs(S(:, i)) .^ 2;
 end
+
+% パワースペクトログラムを表示
+f = (0:windowLength - 1) * (Fs / windowLength);     %周波数軸
+f = f(:);
+t = linspace(0, sigLen / Fs, numFrames);            %時間軸
+S = 10 * log10(S);                                  %強さを対数表示
+
+image = imagesc(t, f, S);
+axis xy;
+
+title('パワースペクトルグラム');
+xlabel('時間 [s]');
+ylabel('周波数 [Hz]');
+
+f_max = max(f);                     % y軸のメモリを2000刻み
+yticks(0:2000:f_max/2);
+
+ylim([0 f_max/2]);
+
+ax = ancestor(image, 'axes');       %指数表示やめる
+ax.YAxis.Exponent = 0;
+
+c = colorbar;                       % カラーバー
+c.Label.String = '信号の強さ [dB]';
+
 
 
