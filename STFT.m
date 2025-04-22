@@ -1,11 +1,6 @@
-% 信号の読み込み
-filename = '美声.wav';
-[audioData, Fs] = audioread(filename);
-%sound(audioData, samplingRate);
+function y = STFT(audioData, Fs, windowLength)
 
-% パラメータ設定
-windowLength = 2 ^ 9;               %窓長
-shiftWidth = windowLength / 2;      %シフト幅
+shiftWidth = windowLength / 2;
 
 % 信号のはじめをゼロパティング
 temp = zeros(shiftWidth, 1);
@@ -41,25 +36,25 @@ hanWin = hanWin(:);
 for i = 1:size(S,2)
     S(:, i) = S(:, i) .* hanWin;
     S(:, i) = fft(S(:, i));
-    S(:, i) = abs(S(:, i)) .^ 2;
+    %S(:, i) = abs(S(:, i)) .^ 2;
 end
 
-% パワースペクトラムを表示
+P = abs(S .^ 2);
+
+% パワースペクトログラムを表示
 f = (0:windowLength - 1) * (Fs / windowLength);     %周波数軸
 f = f(:);
 t = linspace(0, sigLen / Fs, numFrames);            %時間軸
-S = 10 * log10(S);                                  %強さを対数表示
+P = 10 * log10(P);                                  %強さを対数表示
 
-image = imagesc(t, f, S);
+image = imagesc(t, f, P);
 axis xy;
 
-
-title('パワースペクトラム');
+title('パワースペクトルグラム');
 xlabel('時間 [s]');
 ylabel('周波数 [Hz]');
 
-% y軸のメモリを2000刻み
-f_max = max(f);
+f_max = max(f);                     % y軸のメモリを2000刻み
 yticks(0:2000:f_max/2);
 
 ylim([0 f_max/2]);
@@ -67,9 +62,9 @@ ylim([0 f_max/2]);
 ax = ancestor(image, 'axes');       %指数表示やめる
 ax.YAxis.Exponent = 0;
 
-% カラーバー
-c = colorbar;
+c = colorbar;                       % カラーバー
 c.Label.String = '信号の強さ [dB]';
 
+y = S;
 
-
+end
