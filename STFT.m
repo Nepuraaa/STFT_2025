@@ -1,6 +1,4 @@
-function y = STFT(audioData, Fs, windowLength)
-
-shiftWidth = windowLength / 2;
+function S = STFT(audioData, Fs, windowLength, shiftWidth)
 
 % 信号のはじめをゼロパティング
 temp = zeros(shiftWidth, 1);
@@ -36,7 +34,6 @@ hanWin = hanWin(:);
 for i = 1:size(S,2)
     S(:, i) = S(:, i) .* hanWin;
     S(:, i) = fft(S(:, i));
-    %S(:, i) = abs(S(:, i)) .^ 2;
 end
 
 P = abs(S .^ 2);
@@ -64,7 +61,5 @@ ax.YAxis.Exponent = 0;
 
 c = colorbar;                       % カラーバー
 c.Label.String = '信号の強さ [dB]';
-
-y = S;
 
 end
