@@ -8,4 +8,4 @@ shiftWidth = windowLength / 2;
 
 % 関数に引数（音信号，音信号のサンプリング周波数，窓長）を渡す
 % 戻り値はS（複素数値）
-STFT(audioData, Fs, windowLength, shiftWidth);
+S = STFT(audioData, Fs, windowLength, shiftWidth);
